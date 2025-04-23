@@ -1,0 +1,223 @@
+/* Cerebro Tracker - X-Men Comic Reading Progress Tracker
+   Main Stylesheet */
+
+/* X-Men Theme Colors */
+:root {
+    --primary: #1a56db;        /* X-Men Blue */
+    --secondary: #ffc107;      /* X-Men Yellow */
+    --dark: #343a40;           /* Dark Gray */
+    --light: #f8f9fa;          /* Light Gray */
+    --danger: #dc3545;         /* Red for danger/delete actions */
+    --success: #28a745;        /* Green for success/complete actions */
+    --warning: #fd7e14;        /* Orange for warnings */
+    --info: #17a2b8;           /* Teal for info */
+    --cerebro: #6f42c1;        /* Purple for Cerebro elements */
+}
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    color: var(--dark);
+}
+
+.navbar {
+    background-color: var(--primary);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #0d47a1;
+    border-color: #0d47a1;
+}
+
+.btn-outline-primary {
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.text-primary {
+    color: var(--primary) !important;
+}
+
+/* Page Transitions */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Card Styles */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styles */
+.table th {
+    background-color: var(--primary);
+    color: white;
+    cursor: pointer;
+}
+
+.table th:hover {
+    background-color: #0d47a1;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(26, 86, 219, 0.05);
+}
+
+/* Sort indicators */
+th[data-sort]::after {
+    content: "↕";
+    margin-left: 5px;
+    opacity: 0.5;
+}
+
+th[data-sort].sort-asc::after {
+    content: "↑";
+    opacity: 1;
+}
+
+th[data-sort].sort-desc::after {
+    content: "↓";
+    opacity: 1;
+}
+
+/* Comic Status Indicators */
+.status-read {
+    color: var(--success);
+}
+
+.status-unread {
+    color: var(--dark);
+}
+
+/* Series and Writer Cards */
+.series-card, .writer-card {
+    cursor: pointer;
+    height: 100%;
+}
+
+.series-card .card-img-top, .writer-card .card-img-top {
+    height: 150px;
+    object-fit: cover;
+    background-color: var(--primary);
+}
+
+.series-progress {
+    height: 5px;
+}
+
+/* Progress Bars */
+.progress-bar {
+    background-color: var(--primary);
+}
+
+/* X-Men Themed Elements */
+.x-badge {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.cerebro-bg {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--cerebro) 100%);
+    color: white;
+}
+
+/* Jumbotron styling */
+.jumbotron {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--cerebro) 100%);
+    color: white;
+    border-radius: 10px;
+}
+
+/* Footer */
+footer {
+    background-color: var(--dark);
+    color: var(--light);
+    padding: 20px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 2rem;
+    }
+    
+    .card {
+        margin-bottom: 20px;
+    }
+}
+
+/* Modal styling */
+.modal-header {
+    background-color: var(--primary);
+    color: white;
+}
+
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Comic details styling */
+#comic-details-modal h6 {
+    color: var(--primary);
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Login/Register form styling */
+#login-form, #register-form {
+    padding: 10px;
+}
+
+/* Animation for loading states */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.loading {
+    animation: pulse 1.5s infinite;
+}

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerebro Tracker - X-Men Comic Reading Progress</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="logo.png" alt="Cerebro Tracker Logo" height="40">
+                    Cerebro Tracker
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-page="home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="comics">Comics</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="series">Series</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="writers">Writers</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex" id="auth-buttons">
+                        <button class="btn btn-outline-light me-2" id="login-btn">Login</button>
+                        <button class="btn btn-primary" id="register-btn">Register</button>
+                    </div>
+                    <div class="d-none" id="user-profile">
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> <span id="username-display">User</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#" data-page="profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="#" data-page="progress">My Progress</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logout-btn">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="container mt-4">
+            <!-- Home Page -->
+            <div class="page active" id="home-page">
+                <div class="jumbotron p-5 rounded bg-light">
+                    <h1 class="display-4">Welcome to Cerebro Tracker</h1>
+                    <p class="lead">Track your X-Men comic reading progress with this powerful tool.</p>
+                    <hr class="my-4">
+                    <p>Sign up to start tracking your reading journey through the X-Men universe.</p>
+                    <button class="btn btn-primary btn-lg" id="get-started-btn">Get Started</button>
+                </div>
+                
+                <div class="row mt-5">
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <i class="fas fa-book fa-3x mb-3 text-primary"></i>
+                                <h5 class="card-title">Track Comics</h5>
+                                <p class="card-text">Mark comics as read and keep track of your progress.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <i class="fas fa-search fa-3x mb-3 text-primary"></i>
+                                <h5 class="card-title">Search & Filter</h5>
+                                <p class="card-text">Find comics by title, character, writer, or artist.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-body text-center">
+                                <i class="fas fa-layer-group fa-3x mb-3 text-primary"></i>
+                                <h5 class="card-title">Group by Series</h5>
+                                <p class="card-text">Organize comics by series, era, or writer.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comics Page -->
+            <div class="page" id="comics-page">
+                <h2>X-Men Comics</h2>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="search-comics" placeholder="Search comics...">
+                            <button class="btn btn-primary" type="button" id="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-outline-primary" id="filter-btn">
+                                    <i class="fas fa-filter"></i> Filter
+                                </button>
+                                <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" id="filter-options">
+                                    <li><a class="dropdown-item" href="#" data-filter="era">Era</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="writer">Writer</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="artist">Artist</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="character">Character</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="read">Read</a></li>
+                                    <li><a class="dropdown-item" href="#" data-filter="unread">Unread</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover" id="comics-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" data-sort="order">#</th>
+                                <th scope="col" data-sort="book">Book</th>
+                                <th scope="col" data-sort="published">Published</th>
+                                <th scope="col" data-sort="era">Era</th>
+                                <th scope="col" data-sort="writer">Writer(s)</th>
+                                <th scope="col" data-sort="penciller">Penciller(s)</th>
+                                <th scope="col" data-sort="status">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comics-table-body">
+                            <!-- Comics will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <nav aria-label="Comics pagination">
+                    <ul class="pagination justify-content-center" id="comics-pagination">
+                        <!-- Pagination will be generated dynamically -->
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Series Page -->
+            <div class="page" id="series-page">
+                <h2>X-Men Series</h2>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="search-series" placeholder="Search series...">
+                            <button class="btn btn-primary" type="button" id="search-series-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="series-cards">
+                    <!-- Series cards will be loaded here dynamically -->
+                </div>
+            </div>
+
+            <!-- Writers Page -->
+            <div class="page" id="writers-page">
+                <h2>X-Men Writers</h2>
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="search-writers" placeholder="Search writers...">
+                            <button class="btn btn-primary" type="button" id="search-writers-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="writers-cards">
+                    <!-- Writers cards will be loaded here dynamically -->
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page" id="profile-page">
+                <h2>User Profile</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Profile Information</h5>
+                                <form id="profile-form">
+                                    <div class="mb-3">
+                                        <label for="profile-username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="profile-username" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="profile-email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="profile-email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="profile-password" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="profile-password" placeholder="Leave blank to keep current password">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Reading Statistics</h5>
+                                <div class="mb-3">
+                                    <label class="form-label">Comics Read</label>
+                                    <div class="progress">
+                                        <div class="progress-bar" id="comics-read-progress" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted"><span id="comics-read-count">0</span> of <span id="comics-total-count">0</span> comics</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Series Completed</label>
+                                    <div class="progress">
+                                        <div class="progress-bar" id="series-completed-progress" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted"><span id="series-completed-count">0</span> of <span id="series-total-count">0</span> series</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Page -->
+            <div class="page" id="progress-page">
+                <h2>My Reading Progress</h2>
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Reading History</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="reading-history-table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Book</th>
+                                                <th scope="col">Date Read</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reading-history-body">
+                                            <!-- Reading history will be loaded here dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modals -->
+        <!-- Login Modal -->
+        <div class="modal fade" id="login-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Login</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="login-form">
+                            <div class="mb-3">
+                                <label for="login-username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="login-username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="login-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="login-password" required>
+                            </div>
+                            <div class="alert alert-danger d-none" id="login-error"></div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <p class="text-center w-100">Don't have an account? <a href="#" id="switch-to-register">Register</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Modal -->
+        <div class="modal fade" id="register-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Register</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="register-form">
+                            <div class="mb-3">
+                                <label for="register-username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="register-username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="register-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="register-password" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="register-confirm-password" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="register-confirm-password" required>
+                            </div>
+                            <div class="alert alert-danger d-none" id="register-error"></div>
+                            <button type="submit" class="btn btn-primary w-100">Register</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <p class="text-center w-100">Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comic Details Modal -->
+        <div class="modal fade" id="comic-details-modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="comic-details-title">Comic Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>Characters/Events</h6>
+                                <p id="comic-details-characters"></p>
+                                <h6>Published</h6>
+                                <p id="comic-details-published"></p>
+                                <h6>Era</h6>
+                                <p id="comic-details-era"></p>
+                                <h6>Writer(s)</h6>
+                                <p id="comic-details-writers"></p>
+                                <h6>Penciller(s)</h6>
+                                <p id="comic-details-pencillers"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success" id="mark-read-btn">
+                                        <i class="fas fa-check"></i> Mark as Read
+                                    </button>
+                                    <button class="btn btn-danger d-none" id="mark-unread-btn">
+                                        <i class="fas fa-times"></i> Mark as Unread
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-5 py-3 text-center text-muted">
+            <div class="container">
+                <p>Cerebro Tracker - Track your X-Men comic reading progress</p>
+                <p>Created with <i class="fas fa-heart"></i> for X-Men fans</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Application Scripts -->
+    <script src="js/auth.js"></script>
+    <script src="js/comics.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

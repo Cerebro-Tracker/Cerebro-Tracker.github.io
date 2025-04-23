@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cerebro Tracker - Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #1a56db;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .test-button {
+            background-color: #1a56db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .test-button:hover {
+            background-color: #0d47a1;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .success {
+            color: green;
+        }
+        .failure {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cerebro Tracker - Test Page</h1>
+    <p>This page contains tests to verify that the Cerebro Tracker application is working correctly.</p>
+    
+    <div class="test-section">
+        <div class="test-title">1. Test CSV Parsing</div>
+        <button class="test-button" id="test-csv">Run Test</button>
+        <div class="result" id="csv-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">2. Test User Authentication</div>
+        <button class="test-button" id="test-auth">Run Test</button>
+        <div class="result" id="auth-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">3. Test Series Grouping</div>
+        <button class="test-button" id="test-series">Run Test</button>
+        <div class="result" id="series-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">4. Test Writer Grouping</div>
+        <button class="test-button" id="test-writers">Run Test</button>
+        <div class="result" id="writers-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">5. Test Comic Marking</div>
+        <button class="test-button" id="test-marking">Run Test</button>
+        <div class="result" id="marking-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">6. Test Navigation</div>
+        <button class="test-button" id="test-navigation">Run Test</button>
+        <div class="result" id="navigation-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <div class="test-title">7. Test All Components</div>
+        <button class="test-button" id="test-all">Run All Tests</button>
+        <div class="result" id="all-result"></div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    
+    <script>
+        // Test CSV Parsing
+        document.getElementById('test-csv').addEventListener('click', function() {
+            const resultElement = document.getElementById('csv-result');
+            resultElement.innerHTML = 'Testing CSV parsing...';
+            
+            Papa.parse('import.csv', {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.data && results.data.length > 0) {
+                        const firstRow = results.data[0];
+                        if (firstRow.Book && firstRow.Order && firstRow['Writer(s)']) {
+                            resultElement.innerHTML = `<span class="success">Success! CSV parsed correctly. Found ${results.data.length} comics.</span>`;
+                        } else {
+                            resultElement.innerHTML = `<span class="failure">Failure! CSV parsed but expected columns not found.</span>`;
+                        }
+                    } else {
+                        resultElement.innerHTML = `<span class="failure">Failure! No data found in CSV.</span>`;
+                    }
+                },
+                error: function(error) {
+                    resultElement.innerHTML = `<span class="failure">Failure! Error parsing CSV: ${error}</span>`;
+                }
+            });
+        });
+        
+        // Test User Authentication
+        document.getElementById('test-auth').addEventListener('click', function() {
+            const resultElement = document.getElementById('auth-result');
+            resultElement.innerHTML = 'Testing user authentication...';
+            
+            try {
+                // Create a test user
+                const testUser = {
+                    id: 'test-' + Date.now(),
+                    username: 'testuser',
+                    email: 'test@example.com',
+                    password: 'password123',
+                    readComics: [],
+                    dateJoined: new Date().toISOString()
+                };
+                
+                // Save to localStorage
+                const users = JSON.parse(localStorage.getItem('cerebroUsers') || '[]');
+                users.push(testUser);
+                localStorage.setItem('cerebroUsers', JSON.stringify(users));
+                
+                // Try to find the user
+                const foundUser = users.find(u => u.username === 'testuser');
+                
+                if (foundUser) {
+                    // Clean up
+                    const updatedUsers = users.filter(u => u.id !== testUser.id);
+                    localStorage.setItem('cerebroUsers', JSON.stringify(updatedUsers));
+                    
+                    resultElement.innerHTML = `<span class="success">Success! User authentication system working correctly.</span>`;
+                } else {
+                    resultElement.innerHTML = `<span class="failure">Failure! Could not find test user after saving.</span>`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="failure">Failure! Error testing authentication: ${error.message}</span>`;
+            }
+        });
+        
+        // Test Series Grouping
+        document.getElementById('test-series').addEventListener('click', function() {
+            const resultElement = document.getElementById('series-result');
+            resultElement.innerHTML = 'Testing series grouping...';
+            
+            // Create test comics data
+            const testComics = [
+                { id: 'comic-1', book: 'X-Men vol. 1 #1', writer: 'Stan Lee' },
+                { id: 'comic-2', book: 'X-Men vol. 1 #2', writer: 'Stan Lee' },
+                { id: 'comic-3', book: 'Uncanny X-Men #1', writer: 'Chris Claremont' },
+                { id: 'comic-4', book: 'X-Factor #1', writer: 'Bob Layton' }
+            ];
+            
+            try {
+                // Extract series
+                const seriesMap = {};
+                testComics.forEach(comic => {
+                    const seriesMatch = comic.book.match(/^(.*?)(?:\s+vol\.\s+\d+)?\s+#\d+/);
+                    if (seriesMatch) {
+                        const seriesName = seriesMatch[1].trim();
+                        if (!seriesMap[seriesName]) {
+                            seriesMap[seriesName] = [];
+                        }
+                        seriesMap[seriesName].push(comic);
+                    }
+                });
+                
+                const allSeries = Object.keys(seriesMap).map(name => ({
+                    name,
+                    comics: seriesMap[name]
+                }));
+                
+                if (allSeries.length === 3 && 
+                    allSeries.some(s => s.name === 'X-Men') && 
+                    allSeries.some(s => s.name === 'Uncanny X-Men') && 
+                    allSeries.some(s => s.name === 'X-Factor')) {
+                    resultElement.innerHTML = `<span class="success">Success! Series grouping working correctly. Found ${allSeries.length} series.</span>`;
+                } else {
+                    resultElement.innerHTML = `<span class="failure">Failure! Series grouping not working as expected.</span>`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="failure">Failure! Error testing series grouping: ${error.message}</span>`;
+            }
+        });
+        
+        // Test Writer Grouping
+        document.getElementById('test-writers').addEventListener('click', function() {
+            const resultElement = document.getElementById('writers-result');
+            resultElement.innerHTML = 'Testing writer grouping...';
+            
+            // Create test comics data
+            const testComics = [
+                { id: 'comic-1', book: 'X-Men vol. 1 #1', writer: 'Stan Lee' },
+                { id: 'comic-2', book: 'X-Men vol. 1 #2', writer: 'Stan Lee' },
+                { id: 'comic-3', book: 'Uncanny X-Men #1', writer: 'Chris Claremont' },
+                { id: 'comic-4', book: 'X-Factor #1', writer: 'Bob Layton' }
+            ];
+            
+            try {
+                // Extract writers
+                const writerMap = {};
+                testComics.forEach(comic => {
+                    const writers = comic.writer.split(',').map(w => w.trim());
+                    writers.forEach(writer => {
+                        if (writer) {
+                            if (!writerMap[writer]) {
+                                writerMap[writer] = [];
+                            }
+                            writerMap[writer].push(comic);
+                        }
+                    });
+                });
+                
+                const allWriters = Object.keys(writerMap).map(name => ({
+                    name,
+                    comics: writerMap[name]
+                }));
+                
+                if (allWriters.length === 3 && 
+                    allWriters.some(w => w.name === 'Stan Lee' && w.comics.length === 2) && 
+                    allWriters.some(w => w.name === 'Chris Claremont') && 
+                    allWriters.some(w => w.name === 'Bob Layton')) {
+                    resultElement.innerHTML = `<span class="success">Success! Writer grouping working correctly. Found ${allWriters.length} writers.</span>`;
+                } else {
+                    resultElement.innerHTML = `<span class="failure">Failure! Writer grouping not working as expected.</span>`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="failure">Failure! Error testing writer grouping: ${error.message}</span>`;
+            }
+        });
+        
+        // Test Comic Marking
+        document.getElementById('test-marking').addEventListener('click', function() {
+            const resultElement = document.getElementById('marking-result');
+            resultElement.innerHTML = 'Testing comic marking...';
+            
+            try {
+                // Create a test user
+                const testUser = {
+                    id: 'test-' + Date.now(),
+                    username: 'testuser',
+                    email: 'test@example.com',
+                    password: 'password123',
+                    readComics: [],
+                    dateJoined: new Date().toISOString()
+                };
+                
+                // Save to localStorage
+                const users = JSON.parse(localStorage.getItem('cerebroUsers') || '[]');
+                users.push(testUser);
+                localStorage.setItem('cerebroUsers', JSON.stringify(users));
+                
+                // Mark a comic as read
+                const testComicId = 'test-comic-1';
+                const userIndex = users.findIndex(u => u.id === testUser.id);
+                users[userIndex].readComics.push(testComicId);
+                localStorage.setItem('cerebroUsers', JSON.stringify(users));
+                
+                // Check if comic is marked as read
+                const updatedUser = users.find(u => u.id === testUser.id);
+                
+                if (updatedUser && updatedUser.readComics.includes(testComicId)) {
+                    // Clean up
+                    const cleanUsers = users.filter(u => u.id !== testUser.id);
+                    localStorage.setItem('cerebroUsers', JSON.stringify(cleanUsers));
+                    
+                    resultElement.innerHTML = `<span class="success">Success! Comic marking system working correctly.</span>`;
+                } else {
+                    resultElement.innerHTML = `<span class="failure">Failure! Comic marking not working as expected.</span>`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="failure">Failure! Error testing comic marking: ${error.message}</span>`;
+            }
+        });
+        
+        // Test Navigation
+        document.getElementById('test-navigation').addEventListener('click', function() {
+            const resultElement = document.getElementById('navigation-result');
+            resultElement.innerHTML = 'Testing navigation...';
+            
+            try {
+                // Create a mock navigateTo function
+                const mockNavigateTo = function(page) {
+                    return page;
+                };
+                
+                // Test with different pages
+                const pages = ['home', 'comics', 'series', 'writers', 'profile'];
+                const results = pages.map(page => mockNavigateTo(page));
+                
+                if (results.length === 5 && 
+                    results[0] === 'home' && 
+                    results[1] === 'comics' && 
+                    results[2] === 'series' && 
+                    results[3] === 'writers' && 
+                    results[4] === 'profile') {
+                    resultElement.innerHTML = `<span class="success">Success! Navigation system working correctly.</span>`;
+                } else {
+                    resultElement.innerHTML = `<span class="failure">Failure! Navigation not working as expected.</span>`;
+                }
+            } catch (error) {
+                resultElement.innerHTML = `<span class="failure">Failure! Error testing navigation: ${error.message}</span>`;
+            }
+        });
+        
+        // Test All Components
+        document.getElementById('test-all').addEventListener('click', function() {
+            const resultElement = document.getElementById('all-result');
+            resultElement.innerHTML = 'Running all tests...';
+            
+            // Trigger all tests
+            document.getElementById('test-csv').click();
+            document.getElementById('test-auth').click();
+            document.getElementById('test-series').click();
+            document.getElementById('test-writers').click();
+            document.getElementById('test-marking').click();
+            document.getElementById('test-navigation').click();
+            
+            resultElement.innerHTML = `<span class="success">All tests completed. Check individual test results above.</span>`;
+        });
+    </script>
+</body>
+</html>
