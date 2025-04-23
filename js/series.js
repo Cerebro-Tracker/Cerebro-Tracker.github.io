@@ -12,7 +12,29 @@ document.addEventListener('DOMContentLoaded', () => {
  * Set up event listeners for series functionality
  */
 function setupSeriesListeners() {
-    // These will be set up when the comics data is loaded in comics.js
+    // Series search
+    document.getElementById('search-series-btn').addEventListener('click', () => {
+        searchSeries();
+    });
+
+    // Series search input (search on Enter key)
+    document.getElementById('search-series').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchSeries();
+        }
+    });
+
+    // Writers search
+    document.getElementById('search-writers-btn').addEventListener('click', () => {
+        searchWriters();
+    });
+
+    // Writers search input (search on Enter key)
+    document.getElementById('search-writers').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchWriters();
+        }
+    });
 }
 
 /**
@@ -21,19 +43,19 @@ function setupSeriesListeners() {
 function updateSeriesPage() {
     const seriesCards = document.getElementById('series-cards');
     seriesCards.innerHTML = '';
-    
+
     // Get all series
     const allSeries = getAllSeries();
-    
+
     // Get current user's read comics
     const currentUser = window.auth && typeof window.auth.getCurrentUser === 'function' ? window.auth.getCurrentUser() : null;
     const readComics = currentUser ? currentUser.readComics || [] : [];
-    
+
     // Add series cards
     allSeries.forEach(series => {
         const readCount = series.comics.filter(comic => readComics.includes(comic.id)).length;
         const progress = series.comics.length > 0 ? (readCount / series.comics.length) * 100 : 0;
-        
+
         const card = document.createElement('div');
         card.className = 'col-md-4 col-lg-3 mb-4';
         card.innerHTML = `
@@ -64,7 +86,7 @@ function updateSeriesPage() {
         `;
         seriesCards.appendChild(card);
     });
-    
+
     // Add event listeners to series cards
     document.querySelectorAll('.view-series-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -72,14 +94,14 @@ function updateSeriesPage() {
             filterComicsBySeries(seriesName);
         });
     });
-    
+
     document.querySelectorAll('.mark-series-read-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const seriesName = btn.closest('.series-card').getAttribute('data-series');
             markSeriesAsRead(seriesName);
         });
     });
-    
+
     document.querySelectorAll('.mark-series-unread-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const seriesName = btn.closest('.series-card').getAttribute('data-series');
@@ -94,19 +116,19 @@ function updateSeriesPage() {
 function updateWritersPage() {
     const writersCards = document.getElementById('writers-cards');
     writersCards.innerHTML = '';
-    
+
     // Get all writers
     const allWriters = getAllWriters();
-    
+
     // Get current user's read comics
     const currentUser = window.auth && typeof window.auth.getCurrentUser === 'function' ? window.auth.getCurrentUser() : null;
     const readComics = currentUser ? currentUser.readComics || [] : [];
-    
+
     // Add writer cards
     allWriters.forEach(writer => {
         const readCount = writer.comics.filter(comic => readComics.includes(comic.id)).length;
         const progress = writer.comics.length > 0 ? (readCount / writer.comics.length) * 100 : 0;
-        
+
         const card = document.createElement('div');
         card.className = 'col-md-4 col-lg-3 mb-4';
         card.innerHTML = `
@@ -137,7 +159,7 @@ function updateWritersPage() {
         `;
         writersCards.appendChild(card);
     });
-    
+
     // Add event listeners to writer cards
     document.querySelectorAll('.view-writer-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -145,14 +167,14 @@ function updateWritersPage() {
             filterComicsByWriter(writerName);
         });
     });
-    
+
     document.querySelectorAll('.mark-writer-read-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const writerName = btn.closest('.writer-card').getAttribute('data-writer');
             markWriterComicsAsRead(writerName);
         });
     });
-    
+
     document.querySelectorAll('.mark-writer-unread-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const writerName = btn.closest('.writer-card').getAttribute('data-writer');
@@ -166,10 +188,10 @@ function updateWritersPage() {
  */
 function getAllSeries() {
     const seriesMap = {};
-    
+
     // Make sure comicsData is available
     const comicsData = window.comicsData || [];
-    
+
     comicsData.forEach(comic => {
         const seriesMatch = comic.book.match(/^(.*?)(?:\s+vol\.\s+\d+)?\s+#\d+/);
         if (seriesMatch) {
@@ -180,7 +202,7 @@ function getAllSeries() {
             seriesMap[seriesName].push(comic);
         }
     });
-    
+
     return Object.keys(seriesMap).map(name => ({
         name,
         comics: seriesMap[name]
@@ -192,10 +214,10 @@ function getAllSeries() {
  */
 function getAllWriters() {
     const writerMap = {};
-    
+
     // Make sure comicsData is available
     const comicsData = window.comicsData || [];
-    
+
     comicsData.forEach(comic => {
         const writers = comic.writer.split(',').map(w => w.trim());
         writers.forEach(writer => {
@@ -207,7 +229,7 @@ function getAllWriters() {
             }
         });
     });
-    
+
     return Object.keys(writerMap).map(name => ({
         name,
         comics: writerMap[name]
@@ -220,21 +242,21 @@ function getAllWriters() {
 function filterComicsBySeries(seriesName) {
     // Make sure comicsData is available
     const comicsData = window.comicsData || [];
-    
+
     // Filter comics by series
     window.filteredComics = comicsData.filter(comic => {
         const seriesMatch = comic.book.match(/^(.*?)(?:\s+vol\.\s+\d+)?\s+#\d+/);
         return seriesMatch && seriesMatch[1].trim() === seriesName;
     });
-    
+
     // Reset to first page
     window.currentPage = 1;
-    
+
     // Update table
     if (typeof window.updateComicsTable === 'function') {
         window.updateComicsTable();
     }
-    
+
     // Navigate to comics page
     navigateTo('comics');
 }
@@ -245,21 +267,21 @@ function filterComicsBySeries(seriesName) {
 function filterComicsByWriter(writerName) {
     // Make sure comicsData is available
     const comicsData = window.comicsData || [];
-    
+
     // Filter comics by writer
     window.filteredComics = comicsData.filter(comic => {
         const writers = comic.writer.split(',').map(w => w.trim());
         return writers.includes(writerName);
     });
-    
+
     // Reset to first page
     window.currentPage = 1;
-    
+
     // Update table
     if (typeof window.updateComicsTable === 'function') {
         window.updateComicsTable();
     }
-    
+
     // Navigate to comics page
     navigateTo('comics');
 }
@@ -274,23 +296,23 @@ function markSeriesAsRead(seriesName) {
         loginModal.show();
         return;
     }
-    
+
     // Get all comics in the series
     const allSeries = getAllSeries();
     const series = allSeries.find(s => s.name === seriesName);
-    
+
     if (!series) return;
-    
+
     // Mark each comic as read
     series.comics.forEach(comic => {
         if (typeof window.comics.markComicAsRead === 'function') {
             window.comics.markComicAsRead(comic.id);
         }
     });
-    
+
     // Update series page
     updateSeriesPage();
-    
+
     // Update writers page
     updateWritersPage();
 }
@@ -302,23 +324,23 @@ function markSeriesAsUnread(seriesName) {
     if (!window.auth || typeof window.auth.isLoggedIn !== 'function' || !window.auth.isLoggedIn()) {
         return;
     }
-    
+
     // Get all comics in the series
     const allSeries = getAllSeries();
     const series = allSeries.find(s => s.name === seriesName);
-    
+
     if (!series) return;
-    
+
     // Mark each comic as unread
     series.comics.forEach(comic => {
-        if (typeof window.auth.markComicAsUnread === 'function') {
-            window.auth.markComicAsUnread(comic.id);
+        if (typeof window.comics.markComicAsUnread === 'function') {
+            window.comics.markComicAsUnread(comic.id);
         }
     });
-    
+
     // Update series page
     updateSeriesPage();
-    
+
     // Update writers page
     updateWritersPage();
 }
@@ -333,23 +355,23 @@ function markWriterComicsAsRead(writerName) {
         loginModal.show();
         return;
     }
-    
+
     // Get all comics by the writer
     const allWriters = getAllWriters();
     const writer = allWriters.find(w => w.name === writerName);
-    
+
     if (!writer) return;
-    
+
     // Mark each comic as read
     writer.comics.forEach(comic => {
         if (typeof window.comics.markComicAsRead === 'function') {
             window.comics.markComicAsRead(comic.id);
         }
     });
-    
+
     // Update series page
     updateSeriesPage();
-    
+
     // Update writers page
     updateWritersPage();
 }
@@ -361,23 +383,23 @@ function markWriterComicsAsUnread(writerName) {
     if (!window.auth || typeof window.auth.isLoggedIn !== 'function' || !window.auth.isLoggedIn()) {
         return;
     }
-    
+
     // Get all comics by the writer
     const allWriters = getAllWriters();
     const writer = allWriters.find(w => w.name === writerName);
-    
+
     if (!writer) return;
-    
+
     // Mark each comic as unread
     writer.comics.forEach(comic => {
-        if (typeof window.auth.markComicAsUnread === 'function') {
-            window.auth.markComicAsUnread(comic.id);
+        if (typeof window.comics.markComicAsUnread === 'function') {
+            window.comics.markComicAsUnread(comic.id);
         }
     });
-    
+
     // Update series page
     updateSeriesPage();
-    
+
     // Update writers page
     updateWritersPage();
 }
@@ -387,14 +409,14 @@ function markWriterComicsAsUnread(writerName) {
  */
 function searchSeries() {
     const searchTerm = document.getElementById('search-series').value.toLowerCase();
-    
+
     // Get all series
     const allSeries = getAllSeries();
-    
+
     // Filter series cards based on search term
     document.querySelectorAll('.series-card').forEach(card => {
         const seriesName = card.getAttribute('data-series').toLowerCase();
-        
+
         if (seriesName.includes(searchTerm) || searchTerm === '') {
             card.closest('.col-md-4').style.display = 'block';
         } else {
@@ -408,14 +430,14 @@ function searchSeries() {
  */
 function searchWriters() {
     const searchTerm = document.getElementById('search-writers').value.toLowerCase();
-    
+
     // Get all writers
     const allWriters = getAllWriters();
-    
+
     // Filter writer cards based on search term
     document.querySelectorAll('.writer-card').forEach(card => {
         const writerName = card.getAttribute('data-writer').toLowerCase();
-        
+
         if (writerName.includes(searchTerm) || searchTerm === '') {
             card.closest('.col-md-4').style.display = 'block';
         } else {
