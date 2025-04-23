@@ -19,7 +19,7 @@ Cerebro Tracker is a web application for tracking your X-Men comic reading progr
 
 ### Using the App
 
-1. Visit [https://your-username.github.io/Cerebro-Tracker.github.io/](https://your-username.github.io/Cerebro-Tracker.github.io/)
+1. Visit [https://Cerebro-Tracker.github.io/Cerebro-Tracker.github.io/](https://Cerebro-Tracker.github.io/Cerebro-Tracker.github.io/)
 2. Create an account or log in
 3. Start tracking your X-Men comic reading progress!
 
